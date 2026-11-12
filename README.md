@@ -2,7 +2,9 @@
 
 Persistent appointment API and responsive booking page implementing Levels 1–5 of the [Koya contract](https://koyaacademy.com/assessment-api). JavaScript Cloudflare Worker, Cloudflare D1 (SQLite), and embedded HTML/CSS/JavaScript. No runtime package dependencies.
 
-API base and web page: https://careline-clinic-booking.tech-growth-8721.chatgpt.site
+API base: https://careline-clinic-booking.tech-growth-8721.chatgpt.site
+
+Web page (GitHub Pages): https://thi-mee.github.io/clinic-booking-api/
 
 The API key is supplied privately and is never committed. Exact upstream contract: `openapi.json`. API routes live at `/slots`, `/reset`, `/bookings`, and `/bookings/{id}`.
 
@@ -42,7 +44,7 @@ Optional `Idempotency-Key` stores the status, JSON body and retry header with a 
 
 A database-backed sliding 60-second window allows five new attempts per normalized email, including invalid bookings and unavailable/unknown slots. The sixth returns 429 and integer Retry-After. Counters work across serverless instances; expired attempts are removed transactionally. Matching idempotent replays retain the original result. This implements the spec's per-email limit, not a general defense against clients changing email addresses.
 
-API_KEY is a hosted runtime secret. The hosting manifest binds D1 as DB. Schema-only migrations and migration journal live in `drizzle/` and are applied before Worker publication. Production requests never create schema or use an in-memory store. `npm run build` bundles the Worker and embedded page. The site is public for assessment clients to access with the API key alone.
+API_KEY is a hosted runtime secret. The hosting manifest binds D1 as DB. Schema-only migrations and migration journal live in `drizzle/` and are applied before Worker publication. Production requests never create schema or use an in-memory store. `npm run build` bundles the Worker and embedded page. The API is public for assessment clients to access with the API key alone. The frontend is published from docs/ to GitHub Pages; explicit CORS permits that origin and exposes Retry-After. OPTIONS preflight is allowed for that origin without an API key, while every API operation remains authenticated.
 
 ## Tests
 

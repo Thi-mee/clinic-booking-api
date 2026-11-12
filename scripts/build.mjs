@@ -6,3 +6,7 @@ const worker=readFileSync('worker/index.js','utf8').replace(/^import .*;\n/gm,''
 writeFileSync('dist/server/index.js',api+'\n'+page+'\n'+worker);
 cpSync('.openai/hosting.json','dist/.openai/hosting.json');
 console.log('Built Worker and embedded booking page');
+
+mkdirSync('docs',{recursive:true});
+const {page:html}=await import('../worker/page.js');
+writeFileSync('docs/index.html',html);writeFileSync('docs/.nojekyll','');
