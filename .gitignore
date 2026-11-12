@@ -6,3 +6,4 @@ outputs/
 .env*
 .dev.vars*
 *.sqlite*
+worker/page.js

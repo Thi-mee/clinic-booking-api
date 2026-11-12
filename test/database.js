@@ -1,4 +1,0 @@
-import {DatabaseSync} from 'node:sqlite';
-import {readFileSync} from 'node:fs';
-export function database(path=':memory:',migrate=true){const sqlite=new DatabaseSync(path);sqlite.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=10000;');if(migrate)sqlite.exec(readFileSync(new URL('../drizzle/0000_clinic.sql',import.meta.url),'utf8'));
-const db={prepare(sql){return {bind(...args){const stmt={sql,args,async all(){return {results:sqlite.prepare(sql).all(...args)}} ,async first(){return sqlite.prepare(sql).get(...args)??null},async run(){return sqlite.prepare(sql).run(...args)}};return stmt;}}},async batch(statements){sqlite.exec('BEGIN IMMEDIATE');try{const results=statements.map(s=>({results:sqlite.prepare(s.sql).all(...s.args)}));sqlite.exec('COMMIT');return results;}catch(e){sqlite.exec('ROLLBACK');throw e;}},close(){sqlite.close();}};return db;}

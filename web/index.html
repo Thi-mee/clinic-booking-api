@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Careline | Clinic appointments</title>
+    <style>
+      /* CARELINE_STYLES */
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="brand"><span class="mark" aria-hidden="true">+</span>careline</div>
+        <span class="tag">A little time. Better care.</span>
+      </nav>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <div class="eyebrow">Your next step to feeling better</div>
+          <h1>Make time for your health.</h1>
+          <p>Choose an appointment that works for you. We’ll take it from there.</p>
+        </div>
+        <div class="steps">
+          <b>01 Choose a time</b><span>02 Your details</span><span>03 Confirmed</span>
+        </div>
+      </div>
+      <div class="grid">
+        <section class="card">
+          <div class="cardhead">
+            <h2>Available appointments</h2>
+            <span class="badge">Clinic visits</span>
+          </div>
+          <p class="muted">
+            Enter the assessment API key to load appointments. Your key stays in this tab.
+          </p>
+          <form id="connect" class="keybox">
+            <div>
+              <label for="key">API key</label
+              ><input
+                id="key"
+                type="password"
+                required
+                autocomplete="off"
+                placeholder="Paste your API key"
+              />
+            </div>
+            <button id="load">Connect</button>
+          </form>
+          <label for="provider">Care provider</label
+          ><select id="provider">
+            <option value="">All providers</option>
+          </select>
+          <div id="slotstatus" class="muted" role="status"></div>
+          <div id="slots" class="slots">
+            <div class="empty">Your available appointments will appear here.</div>
+          </div>
+          <div class="note">
+            Appointment times are shown in your local time zone. Select a time to
+            continue.
+          </div>
+        </section>
+        <aside>
+          <section class="card" id="details">
+            <div class="eyebrow">A visit, made simple</div>
+            <h2 style="margin-top: 10px">Your appointment</h2>
+            <p class="muted">A few details and you’re all set.</p>
+            <div id="selection" class="selected">Choose an appointment on the left.</div>
+            <form id="book">
+              <label for="name">Full name</label
+              ><input
+                id="name"
+                name="name"
+                autocomplete="name"
+                maxlength="200"
+                required
+                placeholder="e.g. Ada Obi"
+              /><label for="email">Email address</label
+              ><input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                maxlength="254"
+                required
+                placeholder="you@example.com"
+              /><button class="full" id="submit" disabled>Confirm appointment →</button>
+            </form>
+            <div id="feedback" role="status" aria-live="polite"></div>
+            <div class="note">
+              This is an assessment demo. Use fictional details. Your confirmation will
+              appear on this page.
+            </div>
+          </section>
+          <section id="confirmation" class="card confirmed hidden" aria-live="polite">
+            <div class="confirm-icon">✓</div>
+            <div class="eyebrow">All booked</div>
+            <h2 style="margin-top: 10px">We’ll see you soon.</h2>
+            <p>Your appointment is confirmed.</p>
+            <div id="confirmed-details" class="selected"></div>
+            <div class="muted">Booking reference</div>
+            <p id="bookingid" class="confirmation-id"></p>
+            <button id="another" class="secondary full">Book another appointment</button>
+          </section>
+          <details class="card history">
+            <summary>Find or manage your bookings</summary>
+            <form id="find">
+              <label for="findemail">Email address</label
+              ><input
+                id="findemail"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+              /><button class="secondary full">Find bookings</button>
+            </form>
+            <form id="lookup">
+              <label for="reference">Booking reference</label
+              ><input
+                id="reference"
+                required
+                placeholder="Paste your booking reference"
+              /><button class="secondary full">Look up booking</button>
+            </form>
+            <div id="history-message" role="status"></div>
+            <div id="history"></div>
+            <button id="more" class="secondary full hidden">Load more</button>
+          </details>
+        </aside>
+      </div>
+    </main>
+    <footer>
+      <span>careline · Appointment booking demo</span
+      ><span>Thoughtful care starts here.</span>
+    </footer>
+    <script>
+      /* CARELINE_SCRIPT */
+    </script>
+  </body>
+</html>

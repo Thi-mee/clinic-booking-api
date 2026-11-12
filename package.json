@@ -1,1 +1,23 @@
-{"name":"careline-clinic-booking","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test test/*.test.js","dev":"node scripts/dev.mjs","build":"bash scripts/build.sh"},"engines":{"node":">=22.13"}}
+{
+  "name": "careline-clinic-booking",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "predev": "npm run build",
+    "dev": "node scripts/dev.mjs",
+    "pretest": "npm run build",
+    "test": "node --test test/*.test.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm test && node scripts/validate-artifact.mjs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "prettier": "3.6.2"
+  }
+}
