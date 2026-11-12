@@ -13,6 +13,7 @@ The API key is supplied privately and is never committed. Exact upstream contrac
 Requires Node.js 22.13+ with node:sqlite (Node 24 recommended).
 
 ```sh
+npm ci
 npm test
 npm run dev
 ```
@@ -24,6 +25,22 @@ curl http://127.0.0.1:5173/reset \
   -H 'X-API-Key: local-demo-key' -H 'Content-Type: application/json' \
   --data '{"slots":[{"id":"s1","provider":"Dr Ade","start":"2099-12-10T09:00:00Z","end":"2099-12-10T09:30:00Z"}]}'
 ```
+
+## Code organization
+
+- `worker/api.js`: HTTP routing and response mapping.
+- `worker/http.js`, `security.js`, `validation.js`: bounded JSON parsing, typed HTTP errors, authentication, fingerprints, and input validation.
+- `worker/repository.js`: persistence operations; `worker/bookings/` keeps the atomic creation transaction and its SQL together.
+- `web/`: editable HTML, CSS, browser controller, API client, and DOM utilities.
+- `shared/config.js`: API origin and frontend origin shared by browser and Worker builds.
+- `scripts/build.mjs`: esbuild bundles browser modules and Worker modules, producing `docs/index.html` and `dist/server/index.js`. `worker/page.js` is generated and ignored; edit `web/` instead.
+- `scripts/lib/sqlite.js`: local/test D1 adapter; never included in the hosted Worker.
+
+The repository factory provides the persistence boundary without a class hierarchy. HTTP handlers own protocol concerns; database transactions own decisions that must remain atomic. No process-local cache or lock is used for booking correctness. Queries use bound parameters and indexed access; booking lists use keyset pagination rather than increasing offsets. Adding capacity still depends on database write throughput; this design does not imply unlimited throughput.
+
+Run `npm run format` to format source, and `npm run check` for formatting, contract tests and bundled-artifact validation. Prettier and esbuild are pinned development dependencies only. CI runs the same checks on pushes and pull requests. Builds are required before direct imports of the Worker because the embedded page is generated; `npm test` and `npm run dev` build automatically.
+
+Publish assessment changes only before submission or after the assessor authorizes changes. This refactor is prepared on a separate branch so the submitted API and GitHub Pages deployment stay unchanged until merged and redeployed.
 
 ## HTTP contract
 

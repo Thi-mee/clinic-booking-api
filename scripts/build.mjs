@@ -1,12 +1,44 @@
-import {readFileSync,writeFileSync,mkdirSync,rmSync,cpSync} from 'node:fs';
-rmSync('dist',{recursive:true,force:true});mkdirSync('dist/server',{recursive:true});mkdirSync('dist/.openai',{recursive:true});
-const api=readFileSync('worker/api.js','utf8').replace('export async function api','async function api');
-const page=readFileSync('worker/page.js','utf8').replace('export const page','const page');
-const worker=readFileSync('worker/index.js','utf8').replace(/^import .*;\n/gm,'');
-writeFileSync('dist/server/index.js',api+'\n'+page+'\n'+worker);
-cpSync('.openai/hosting.json','dist/.openai/hosting.json');
-console.log('Built Worker and embedded booking page');
+import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { build } from 'esbuild';
+import { fileURLToPath } from 'node:url';
 
-mkdirSync('docs',{recursive:true});
-const {page:html}=await import('../worker/page.js');
-writeFileSync('docs/index.html',html);writeFileSync('docs/.nojekyll','');
+const projectRoot = new URL('../', import.meta.url);
+process.chdir(fileURLToPath(projectRoot));
+
+const [template, styles, browserBuild] = await Promise.all([
+  readFile('web/index.html', 'utf8'),
+  readFile('web/styles.css', 'utf8'),
+  build({
+    entryPoints: ['web/app.js'],
+    bundle: true,
+    format: 'iife',
+    platform: 'browser',
+    target: 'es2022',
+    write: false,
+  }),
+]);
+const script = browserBuild.outputFiles[0].text.replaceAll('</script', '<\\/script');
+const page = template
+  .replace('/* CARELINE_STYLES */', () => styles)
+  .replace('/* CARELINE_SCRIPT */', () => script);
+
+await writeFile(
+  'worker/page.js',
+  `// Generated from web/. Do not edit.\nexport const page = ${JSON.stringify(page)};\n`,
+);
+await rm('dist', { recursive: true, force: true });
+await mkdir('dist/server', { recursive: true });
+await mkdir('dist/.openai', { recursive: true });
+await build({
+  entryPoints: ['worker/index.js'],
+  bundle: true,
+  format: 'esm',
+  platform: 'browser',
+  target: 'es2022',
+  outfile: 'dist/server/index.js',
+});
+await cp('.openai/hosting.json', 'dist/.openai/hosting.json');
+await mkdir('docs', { recursive: true });
+await writeFile('docs/index.html', page);
+await writeFile('docs/.nojekyll', '');
+console.log('Built Worker and GitHub Pages frontend.');
