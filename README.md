@@ -68,5 +68,3 @@ API_KEY is a hosted runtime secret. The hosting manifest binds D1 as DB. Schema-
 `npm test` exercises actual Worker handlers against real SQLite transactions through a small D1-compatible test adapter: authentication on all routes, validation, field normalization, availability, 40 competing bookings, cancellation/rebooking, 20 concurrent identical retries, error replay, pagination, rate expiry/independent emails, and reset atomicity. `scripts/check-live.mjs` performs destructive pre-submission HTTPS verification and leaves 12 demo slots. Do not rerun reset or change the deployment after submission.
 
 The page uses the API for listing, booking, confirmation, lookup, pagination and cancellation; network retries reuse an idempotency key. It escapes patient text, prevents duplicate form submission, reports server failures and shows appointment times in the visitor's timezone.
-
-See WALKTHROUGH.md for a recording outline under five minutes. The submitter must record and upload the Loom.
